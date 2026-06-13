@@ -53,24 +53,28 @@ def print_results(results, console=None):
             for c in r.cookies:
                 console.print(f"  {c['name']} = {c['value'][:80]}")
 
-    # Grades (failing grades in red)
+    # Grades (failing grades in red, 在读 in blue)
     for r in results:
         if r.grades:
             console.print(f"\n[bold green]{r.username} - Grades:[/bold green]")
             for row in r.grades:
                 line = ' | '.join(str(c) for c in row)
-                if _is_failing(row):
+                if any('在读' in str(c) for c in row):
+                    console.print(f"  [bold blue]{line}[/bold blue]")
+                elif _is_failing(row):
                     console.print(f"  [bold red]{line}[/bold red]")
                 else:
                     console.print(f"  {line}")
 
-    # Plan completion
+    # Plan completion (在读 in blue, 缺 in yellow)
     for r in results:
         if r.plan_credits:
             console.print(f"\n[bold blue]{r.username} - Plan Credits:[/bold blue]")
             for row in r.plan_credits:
                 line = ' | '.join(str(c) for c in row)
-                if any('缺' in str(c) for c in row):
+                if any('在读' in str(c) for c in row):
+                    console.print(f"  [bold blue]{line}[/bold blue]")
+                elif any('缺' in str(c) for c in row):
                     console.print(f"  [bold yellow]{line}[/bold yellow]")
                 else:
                     console.print(f"  {line}")
