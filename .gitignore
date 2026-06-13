@@ -165,3 +165,4 @@ custom.py
 config.toml
 *.csv
 *.xlsx
+results.json
