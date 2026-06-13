@@ -19,7 +19,7 @@
 
 ```powershell
 # 安装 Python 依赖(推荐使用uv环境)
-pip install playwright pyyaml rich
+pip install playwright pytoml rich
 
 # 安装 Chromium（国内需设镜像）
 set PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright
@@ -32,10 +32,10 @@ playwright install chromium
 复制模板并编辑：
 
 ```powershell
-copy config.example.yaml config.yaml
+copy config.example.toml config.toml
 ```
 
-```yaml
+```toml
 login_url: "https://ids.shiep.edu.cn/authserver/login"
 target_url: "https://jw.shiep.edu.cn/eams/stdElectCourse!batchOperator.action?profileId=1776"
 cookie_filter: "JSESSIONID,SERVERNAME"
@@ -82,10 +82,10 @@ start "VPN-4" %EXE% --server %SERVER% --username 账号4 --password 密码4 --bi
 
 ```powershell
 # 全部学期
-python -m src.main -c config.yaml
+python -m src.main -c config.toml
 
 # 指定学期
-python -m src.main -c config.yaml -s 404
+python -m src.main -c config.toml -s 404
 ```
 
 ### 3. 查看结果
@@ -114,7 +114,7 @@ multi-ip-cookie-scanner/
 │   ├── scanner.py         # 登录、Cookie提取、成绩爬取、学分计划爬取
 │   ├── proxy_manager.py   # 代理池管理
 │   └── reporter.py        # Rich 彩色输出，不合格标红，JSON 导出
-├── config.example.yaml
+├── config.example.toml
 ├── launch_vpns.bat
 ├── setup.bat
 ├── requirements.txt
