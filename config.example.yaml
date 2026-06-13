@@ -1,0 +1,22 @@
+login_url: "https://jw.shiep.edu.cn/eams/login.action"
+target_url: "https://jw.shiep.edu.cn/eams/stdElectCourse!batchOperator.action?profileId=1776"
+cookie_filter: "JSESSIONID,SERVERNAME"
+headless: true
+timeout: 30
+max_concurrency: 4
+semester: "404" #default
+output: "results.json"
+
+accounts:
+  - username: "账号1"
+    password: "教务密码1"
+    proxy: "socks5h://127.0.0.1:1081"
+  - username: "账号2"
+    password: "教务密码2"
+    proxy: "socks5h://127.0.0.1:1082"
+  - username: "账号3"
+    password: "教务密码3"
+    proxy: "socks5h://127.0.0.1:1083"
+  - username: "账号4"
+    password: "教务密码4"
+    proxy: "socks5h://127.0.0.1:1084"
