@@ -206,8 +206,8 @@ class CookieScanner:
                                     // Keep all Type A rows
                                     rows.push(cells);
                                 } else if (isTypeB(first)) {
-                                    // Keep Type B rows unless any cell equals exactly "是"
-                                    if (!cells.some(c => c === '是')) {
+                                    // Keep Type B rows only if any cell equals exactly "否"
+                                    if (cells.some(c => c === '否')) {
                                         rows.push(cells);
                                     }
                                 } else {
