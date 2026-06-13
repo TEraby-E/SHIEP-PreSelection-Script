@@ -131,7 +131,3 @@ multi-ip-cookie-scanner/
 - aiohttp 风格的异步并发
 - Rich（终端彩色输出）
 - SHIEP-Pipeline（Rust 实现的 EasyConnect VPN）
-
-## License
-
-MIT
