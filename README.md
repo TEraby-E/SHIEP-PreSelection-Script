@@ -16,7 +16,7 @@ uv sync
 set PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright
 uv run playwright install chromium
 ```
-- [SHIEP-Pipeline](https://github.com/Yan233th/SHIEP-Course-Selection-Script) 上电VPN脚本
+- [SHIEP-Pipeline](https://github.com/Yan233th/SHIEP-Pipeline) 上电VPN脚本
 
 ## 配置
 
