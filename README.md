@@ -34,7 +34,7 @@ headless: true
 timeout: 30
 max_concurrency: 4
 output: "results.json"
-semester: ""  # 留空=全部学期，填学期ID如 "404" 筛选特定学期
+semester: ""  #填学期ID如 "404" 筛选特定学期
 
 accounts:
   - username: "学号1"
@@ -69,12 +69,12 @@ start "VPN-4" %EXE% --server %SERVER% --username 账号4 --password 密码4 --bi
 
 然后更改后缀名为.bat,运行后等待所有终端显示 `[VPN] ✓ tunnel established`。
 
-### 2. 运行扫描
+### 2. 运行
 
 ```powershell
 
 # 指定学期
-python -m src.main -c config.toml -s 404
+python -m src.main -c config.toml
 ```
 
 ### 3. 查看结果
