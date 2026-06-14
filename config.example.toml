@@ -5,6 +5,7 @@ headless: true
 timeout: 30
 max_concurrency: 4
 semester: "404" #default
+enrollment_year: 2026
 output: "results.json"
 
 accounts:

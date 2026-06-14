@@ -8,24 +8,15 @@
 - 成绩爬取：拉取全部或指定学期的课程成绩
 - 学分计划：抓取培养计划完成情况，按大类汇总学分需求与缺额，显示未完成的小类明细
 
-## 环境要求
-
-- Windows 10/11
-- Python 3.10+
-- [SHIEP-Pipeline](https://github.com/Yan233th/SHIEP-Course-Selection-Script) 上电VPN脚本(Easier Connect)
-- 外部代理
-
 ## 安装
-
-```powershell
-# 安装 Python 依赖(推荐使用uv环境)
-pip install playwright pytoml rich
-
-# 安装 Chromium（国内需设镜像）
+- Python 3.12+并使用uv进行依赖管理
+- 安装环境和依赖：
+```bash
+uv sync
 set PLAYWRIGHT_DOWNLOAD_HOST=https://npmmirror.com/mirrors/playwright
-playwright install chromium
-
+uv run playwright install chromium
 ```
+- [SHIEP-Pipeline](https://github.com/Yan233th/SHIEP-Course-Selection-Script) 上电VPN脚本
 
 ## 配置
 
@@ -70,10 +61,10 @@ accounts:
 set EXE=.\SHIEP-Pipeline.exe
 set SERVER=https://vpn.shiep.edu.cn
 
-start "VPN-1" %EXE% --server %SERVER% --username 账号1 --password 密码1 --bind 127.0.0.1:1081 --fallback socks5h://127.0.0.1:10808
-start "VPN-2" %EXE% --server %SERVER% --username 账号2 --password 密码2 --bind 127.0.0.1:1082 --fallback socks5h://127.0.0.1:10808
-start "VPN-3" %EXE% --server %SERVER% --username 账号3 --password 密码3 --bind 127.0.0.1:1083 --fallback socks5h://127.0.0.1:10808
-start "VPN-4" %EXE% --server %SERVER% --username 账号4 --password 密码4 --bind 127.0.0.1:1084 --fallback socks5h://127.0.0.1:10808
+start "VPN-1" %EXE% --server %SERVER% --username 账号1 --password 密码1 --bind 127.0.0.1:1081
+start "VPN-2" %EXE% --server %SERVER% --username 账号2 --password 密码2 --bind 127.0.0.1:1082
+start "VPN-3" %EXE% --server %SERVER% --username 账号3 --password 密码3 --bind 127.0.0.1:1083
+start "VPN-4" %EXE% --server %SERVER% --username 账号4 --password 密码4 --bind 127.0.0.1:1084
 ```
 
 然后更改后缀名为.bat,运行后等待所有终端显示 `[VPN] ✓ tunnel established`。
@@ -81,8 +72,6 @@ start "VPN-4" %EXE% --server %SERVER% --username 账号4 --password 密码4 --bi
 ### 2. 运行扫描
 
 ```powershell
-# 全部学期
-python -m src.main -c config.toml
 
 # 指定学期
 python -m src.main -c config.toml -s 404
@@ -98,11 +87,9 @@ python -m src.main -c config.toml -s 404
 
 ## 学期 ID
 
-打开成绩查询页面，F12 → Network → 切换学期下拉框，观察请求中的 `semesterId` 参数。已知学期 ID：
-
-| 学期 | ID |
-|------|-----|
+ `semesterId` 参数规则为
 | 2025-2026 第二学期 | 404 |
+之后的学期加20，之前的学期减20
 
 ## 项目结构
 
