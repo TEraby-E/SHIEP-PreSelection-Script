@@ -56,6 +56,7 @@ FUNCTIONS = [
     ("1", "获取 Cookie", "do_cookies"),
     ("2", "抓取成绩", "do_grades"),
     ("3", "抓取培养方案", "do_plan"),
+    ("4", "抓取期末考试安排", "do_exams"),
 ]
 VALID_KEYS = {k for k, _, _ in FUNCTIONS} | {"0"}
 
@@ -181,7 +182,7 @@ def main():
             flag = next(flag for k, _, flag in FUNCTIONS if k == key)
             ops[flag] = True
 
-        semester = ask_semester(cfg) if ops.get("do_grades") else ""
+        semester = ask_semester(cfg) if ops.get("do_grades") or ops.get("do_exams") else ""
 
         asyncio.run(run(cfg, ops, semester))
 

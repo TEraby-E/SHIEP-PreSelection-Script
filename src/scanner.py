@@ -4,7 +4,7 @@ from playwright.async_api import async_playwright, Browser
 
 from .models import ScanResult
 from .auth import login, fetch_cookies
-from .scraper import fetch_grades, fetch_plan
+from .scraper import fetch_grades, fetch_plan, fetch_exams
 from .logconf import account_logger
 
 _USER_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -26,7 +26,8 @@ class CookieScanner:
     async def scan_account(self, browser: Browser, account: dict,
                            do_cookies: bool = True,
                            do_grades: bool = True,
-                           do_plan: bool = True) -> ScanResult:
+                           do_plan: bool = True,
+                           do_exams: bool = True) -> ScanResult:
         username = account["username"]
         log = account_logger(username)
         result = ScanResult(proxy=account.get("proxy", ""), username=username)
@@ -67,6 +68,9 @@ class CookieScanner:
             if do_plan:
                 labels.append("plan")
                 coros.append(fetch_plan(ctx, username, self.timeout_ms))
+            if do_exams:
+                labels.append("exams")
+                coros.append(fetch_exams(ctx, username, self.timeout_ms, self.semester))
 
             outcomes = await asyncio.gather(*coros, return_exceptions=True)
             data = dict(zip(labels, outcomes))
@@ -95,6 +99,13 @@ class CookieScanner:
                 else:
                     result.plan_credits = val
 
+            if "exams" in data:
+                val = data["exams"]
+                if isinstance(val, Exception):
+                    result.add_error(f"Exam fetch failed: {val}")
+                else:
+                    result.exams = val
+
             # login_page no longer needed after cookie extraction.
             await login_page.close()
 
@@ -109,7 +120,8 @@ class CookieScanner:
     async def scan_all(self, accounts: list[dict], max_concurrency: int = 5,
                        do_cookies: bool = True,
                        do_grades: bool = True,
-                       do_plan: bool = True) -> list[ScanResult]:
+                       do_plan: bool = True,
+                       do_exams: bool = True) -> list[ScanResult]:
         async with async_playwright() as p:
             browser = await p.chromium.launch(
                 headless=self.headless,
@@ -125,6 +137,7 @@ class CookieScanner:
                             do_cookies=do_cookies,
                             do_grades=do_grades,
                             do_plan=do_plan,
+                            do_exams=do_exams,
                         )
                     except Exception as e:
                         r = ScanResult(proxy=acc.get("proxy", ""),

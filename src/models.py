@@ -8,6 +8,7 @@ class ScanResult:
     cookies: list = field(default_factory=list)
     grades: list = field(default_factory=list)
     plan_credits: list = field(default_factory=list)
+    exams: list = field(default_factory=list)
     error: str = ""
 
     @property

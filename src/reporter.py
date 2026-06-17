@@ -93,6 +93,44 @@ def _format_grade_row(cells: list) -> str | None:
             f"学分:{_cell(cells, 5)} {score_part} 绩点:{_cell(cells, 8)}")
 
 
+# ─── Exam formatting ───────────────────────────────────────────────────────────
+
+def _build_credit_map(grades: list, plan_credits: list) -> dict:
+    """course name → credit, gathered from grade rows and plan rows."""
+    credit_map: dict[str, str] = {}
+    for row in grades:
+        name, credit = _cell(row, 3).strip(), _cell(row, 5).strip()
+        if name and credit:
+            credit_map[name] = credit
+    for row in plan_credits:
+        cells = [str(c).strip() for c in row]
+        if cells and cells[0].isdigit():
+            name, credit = _cell(cells, 2), _cell(cells, 3)
+            if name and credit:
+                credit_map[name] = credit
+    return credit_map
+
+
+def _format_exam_row(cells: list, credit_map: dict | None = None) -> str | None:
+    """cols: course_code|course_name|exam_type|date|time|location"""
+    cells = [str(c).strip() for c in cells]
+    if len(cells) < 5 or not any(cells):
+        return None
+    if cells[0] in ("课程序号", "序号") or "课程名称" in cells:
+        return None
+    course_code, name, exam_type, date, time = (
+        _cell(cells, 0), _cell(cells, 1), _cell(cells, 2),
+        _cell(cells, 3), _cell(cells, 4),
+    )
+    location = _cell(cells, 5)
+    credit = (credit_map or {}).get(name, "")
+    parts = [course_code, name, exam_type, date, time, location]
+    line = " ".join(p for p in parts if p)
+    if credit:
+        line += f" {credit}学分"
+    return line
+
+
 # ─── Output ───────────────────────────────────────────────────────────────────
 
 def print_results(results, console=None):
@@ -104,13 +142,14 @@ def print_results(results, console=None):
     table.add_column("Cookies", style="yellow", justify="right")
     table.add_column("Grades", style="green", justify="right")
     table.add_column("Plan", style="blue", justify="right")
+    table.add_column("Exams", style="bright_yellow", justify="right")
     table.add_column("Status", style="bold")
 
     for r in results:
         status = f"[red]{r.error[:50]}[/red]" if r.error else "[green]OK[/green]"
         table.add_row(r.username, r.proxy or "direct",
                       str(len(r.cookies)), str(len(r.grades)),
-                      str(len(r.plan_credits)), status)
+                      str(len(r.plan_credits)), str(len(r.exams)), status)
     console.print(table)
 
     for r in results:
@@ -138,6 +177,16 @@ def print_results(results, console=None):
                     continue
                 line, style = result
                 console.print(f"  {style}{line}[/]" if style else f"  {line}")
+
+    for r in results:
+        if r.exams:
+            console.print(f"\n[bold bright_yellow]{r.username} - 期末考试:[/bold bright_yellow]")
+            credit_map = _build_credit_map(r.grades, r.plan_credits)
+            for row in r.exams:
+                line = _format_exam_row(row, credit_map)
+                if line is None:
+                    continue
+                console.print(f"  {line}")
 
 
 def export_json(results, path):
